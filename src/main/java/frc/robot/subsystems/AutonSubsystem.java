@@ -53,7 +53,7 @@ public class AutonSubsystem extends SubsystemBase{
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private CompliantWheelsSubsystem compliantWheelsSubsystem;
-    private PhotonVision photonVision;
+    // private PhotonVision photonVision;
     private TrajectoryWaypoints trajectoryWaypoints;
     private AllianceConfig allianceConfig;
     private Boolean isRedSide;
@@ -109,12 +109,12 @@ public class AutonSubsystem extends SubsystemBase{
     private TrajectoryConfig config = new TrajectoryConfig(4, 2.5);
 
 
-    public AutonSubsystem(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, CompliantWheelsSubsystem compliantWheelsSubsystem, PhotonVision photonVision, Aprilometry aprilometry, TrajectoryWaypoints trajectoryWaypoints) {
+    public AutonSubsystem(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, CompliantWheelsSubsystem compliantWheelsSubsystem,/* PhotonVision photonVision,*/ Aprilometry aprilometry, TrajectoryWaypoints trajectoryWaypoints) {
         this.swerveSubsystem = swerveSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.intakeSubsystem = intakeSubsystem;
         this.compliantWheelsSubsystem = compliantWheelsSubsystem;
-        this.photonVision = photonVision;
+        // this.photonVision = photonVision;
         this.aprilometry = aprilometry;
         this.trajectoryWaypoints = trajectoryWaypoints;
 
@@ -181,7 +181,7 @@ public class AutonSubsystem extends SubsystemBase{
         return new AdaptiveTrajectoryFollowCommand(
             this, 
             swerveSubsystem, 
-            photonVision,
+            // photonVision,
             () -> compliantWheelsSubsystem.isShooterLineBreakBroken(), 
             newTrajectory, 
             thetaController,

@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.AngleUtil;
 import frc.robot.subsystems.AutonSubsystem;
-import frc.robot.subsystems.PhotonVision;
+// import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class AdaptiveTrajectoryFollowCommand extends SwerveControllerCommand {
-    public AdaptiveTrajectoryFollowCommand(AutonSubsystem autonSubsystem, SwerveSubsystem swerveSubsystem, PhotonVision photonVision,
+    public AdaptiveTrajectoryFollowCommand(AutonSubsystem autonSubsystem, SwerveSubsystem swerveSubsystem,/* PhotonVision photonVision,*/
     Supplier<Boolean> ifHasNote, Trajectory trajectory, ProfiledPIDController thetaController, Pose2d goToPose) {
         super(
         trajectory, 

@@ -49,10 +49,10 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSource{
     * Positive y values represent the distance from the center to the left of the bot.
     */
     private final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-        new Translation2d(xVal, yVal),
         new Translation2d(xVal, -yVal),
-        new Translation2d(-xVal, yVal),
-        new Translation2d(-xVal, -yVal)
+        new Translation2d(xVal, yVal),
+        new Translation2d(-xVal, -yVal),
+        new Translation2d(-xVal, yVal)
     );
 
     private final double autonAimingPID_P = 7;

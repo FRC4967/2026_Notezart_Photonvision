@@ -8,12 +8,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PhotonVision;
+// import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class DefaultSwerveCommand extends Command{
     private SwerveSubsystem swerveSubsystem;
-    private PhotonVision photonVision;
+    // private PhotonVision photonVision;
 
     private Supplier<Double> xSupplier;
     private Supplier<Double> ySupplier;
@@ -26,8 +26,8 @@ public class DefaultSwerveCommand extends Command{
     private double zSpeed;
 
     private final PIDController yawController = new PIDController(20, 0, 0.5);
-    private final double deadBand = 0.1;
-    private final double zDeadBand = 0.15;
+    private final double deadBand = 0.2;
+    private final double zDeadBand = 0.3;
 
     /**
      * 
@@ -38,10 +38,10 @@ public class DefaultSwerveCommand extends Command{
      * @param speakerAssistButton while held the chassis angle will automatically angle to the speaker based on odometry
      * @param noteAssistButton while held the chassis angle will automatically angle to the note detected by photonvision
      */
-    public DefaultSwerveCommand(SwerveSubsystem swerveSubsystem, PhotonVision photonVision, Supplier<Double> yAxis, 
+    public DefaultSwerveCommand(SwerveSubsystem swerveSubsystem,/* PhotonVision photonVision,*/ Supplier<Double> yAxis, 
     Supplier<Double> xAxis, Supplier<Double> zAxis, Supplier<Boolean> speakerAssistButton, Supplier<Boolean> noteAssistButton, Supplier<Boolean> ampAssistButton) {
         this.swerveSubsystem = swerveSubsystem;
-        this.photonVision = photonVision;
+        // this.photonVision = photonVision;
         this.xSupplier = xAxis;
         this.ySupplier = yAxis;
         this.zSupplier = zAxis;
@@ -62,18 +62,18 @@ public class DefaultSwerveCommand extends Command{
         SmartDashboard.putNumber("JS Axis1 (Y/forward)", ySupplier.get());
         SmartDashboard.putNumber("JS Axis2 (Z/rotate)", zSupplier.get());
 
-        if (speakerAssistSupplier.get()) {
-            zSpeed = swerveSubsystem.getPercentageToAngleToSpeaker();
-        } else if (noteAssistSupplier.get() && photonVision.ifhasTargets()) {
-            zSpeed = MathUtil.clamp(photonVision.getYaw() * swerveSubsystem.getBusVolts() / 60, -swerveSubsystem.getBusVolts(), swerveSubsystem.getBusVolts()) / swerveSubsystem.getBusVolts();
-        } else if (ampAssistSupplier.get()){
-            zSpeed = MathUtil.clamp(yawController.calculate(swerveSubsystem.getGyroRad(), Math.toRadians(-90)), -swerveSubsystem.getBusVolts(), swerveSubsystem.getBusVolts()) / swerveSubsystem.getBusVolts();
-        } else {
+        // if (speakerAssistSupplier.get()) {
+        //     zSpeed = swerveSubsystem.getPercentageToAngleToSpeaker();
+        // } else if (noteAssistSupplier.get() && photonVision.ifhasTargets()) {
+        //     zSpeed = MathUtil.clamp(photonVision.getYaw() * swerveSubsystem.getBusVolts() / 60, -swerveSubsystem.getBusVolts(), swerveSubsystem.getBusVolts()) / swerveSubsystem.getBusVolts();
+        // } else if (ampAssistSupplier.get()){
+        //     zSpeed = MathUtil.clamp(yawController.calculate(swerveSubsystem.getGyroRad(), Math.toRadians(-90)), -swerveSubsystem.getBusVolts(), swerveSubsystem.getBusVolts()) / swerveSubsystem.getBusVolts();
+        // } else {
             zSpeed = MathUtil.applyDeadband(zSupplier.get(), zDeadBand) * swerveSubsystem.getMaxAngularSpeed();
-        }
+        // }
 
 
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-ySpeed, -xSpeed, -zSpeed, swerveSubsystem.getGyroRotationRaw());
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-ySpeed, -xSpeed, zSpeed, swerveSubsystem.getGyroRotationRaw());
         SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setTeleopModuleStates(swerveModuleStates);
         super.execute();

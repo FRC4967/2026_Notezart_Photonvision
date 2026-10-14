@@ -26,7 +26,7 @@ import frc.robot.subsystems.AutonSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CompliantWheelsSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.PhotonVision;
+// import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.LightSubsystem;
@@ -40,8 +40,8 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private final CompliantWheelsSubsystem compliantWheelsSubsystem = new CompliantWheelsSubsystem();
   private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private final PhotonVision photonVision = new PhotonVision();
-  private final AutonSubsystem autonSubsystem = new AutonSubsystem(swerveSubsystem, shooterSubsystem, intakeSubsystem, compliantWheelsSubsystem, /*photonVision,*/ null, aprilometry, trajectoryWaypoints);
+  // private final PhotonVision photonVision = new PhotonVision();
+  private final AutonSubsystem autonSubsystem = new AutonSubsystem(swerveSubsystem, shooterSubsystem, intakeSubsystem, compliantWheelsSubsystem, /*photonVision, null,*/ aprilometry, trajectoryWaypoints);
   private final CommandJoystick driverJoystick = new CommandJoystick(ButtonMap.DRIVER_JOYSTICK_ID);
   private final CommandJoystick manipulatorPanel = new CommandJoystick(ButtonMap.MANIPULATOR_PANEL_ID);
   private final LightSubsystem lightSubsystem = new LightSubsystem();
@@ -52,7 +52,7 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(new DefaultSwerveCommand(
     swerveSubsystem,
-    photonVision,
+    // photonVision,
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_Y_AXIS),
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_X_AXIS),
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_Z_AXIS),
