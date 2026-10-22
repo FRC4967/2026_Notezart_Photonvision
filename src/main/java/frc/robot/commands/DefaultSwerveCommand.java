@@ -26,8 +26,7 @@ public class DefaultSwerveCommand extends Command{
     private double zSpeed;
 
     private final PIDController yawController = new PIDController(20, 0, 0.5);
-    private final double deadBand = 0.2;
-    private final double zDeadBand = 0.3;
+    private final double deadBand = 0.3;
 
     /**
      * 
@@ -53,7 +52,7 @@ public class DefaultSwerveCommand extends Command{
     }
     
     @Override
-    public void execute() {    
+    public void execute() {
 
         ySpeed = MathUtil.applyDeadband(ySupplier.get(), deadBand);
         xSpeed = MathUtil.applyDeadband(xSupplier.get(), deadBand);
@@ -69,7 +68,7 @@ public class DefaultSwerveCommand extends Command{
         // } else if (ampAssistSupplier.get()){
         //     zSpeed = MathUtil.clamp(yawController.calculate(swerveSubsystem.getGyroRad(), Math.toRadians(-90)), -swerveSubsystem.getBusVolts(), swerveSubsystem.getBusVolts()) / swerveSubsystem.getBusVolts();
         // } else {
-            zSpeed = MathUtil.applyDeadband(zSupplier.get(), zDeadBand) * swerveSubsystem.getMaxAngularSpeed();
+            zSpeed = MathUtil.applyDeadband(zSupplier.get(), deadBand);
         // }
 
 
