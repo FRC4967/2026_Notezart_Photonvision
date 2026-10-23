@@ -47,22 +47,26 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
     //   Lateral offset:  ±11.25 cm from robot centerline
     //   Yaw:             28.5° outward (right cam = -28.5°, left cam = +28.5°)
     //
-    // TODO — measure on the physical robot and fill in:
-    //   CAMERA_X  = how far forward the lens is from the robot center (meters)
+    //   CAMERA_X  = how far forward the lens is from the robot center (you know, x) (meters)
+    //   CAMERA_Y  = how far over the lens is from the robot center (you know, y) (also meters)
     //   CAMERA_Z  = how high the lens is off the floor (meters)
     //   CAMERA_PITCH = upward tilt angle (positive = tilted up, degrees)
     // -----------------------------------------------------------------------
-    private static final double CAMERA_X     = 0.344; // 13.54 inches from robot center
-    private static final double CAMERA_Z     = 0.25;  // TODO: measure
-    private static final double CAMERA_PITCH = 10.0;  // TODO: measure (degrees upward)
+    private static final double CAMERA_X     = 0.344; // TODO: measure
+    private static final double CAMERA_Y     = 0; // TODO: measure
+    private static final double CAMERA_Z     = 0.2714625;
+    
+    private static final double CAMERA_ROLL = 0;
+    private static final double CAMERA_YAW = 28.5;
+    private static final double CAMERA_PITCH = 0;
 
     private static final Transform3d ROBOT_TO_RIGHT_CAM = new Transform3d(
-        new Translation3d(CAMERA_X, -0.1125, CAMERA_Z),
-        new Rotation3d(0.0, Units.degreesToRadians(-CAMERA_PITCH), Units.degreesToRadians(-28.5))
+        new Translation3d(CAMERA_X, -CAMERA_Y, CAMERA_Z),
+        new Rotation3d(CAMERA_ROLL, Units.degreesToRadians(-CAMERA_PITCH), Units.degreesToRadians(-CAMERA_YAW))
     );
     private static final Transform3d ROBOT_TO_LEFT_CAM = new Transform3d(
-        new Translation3d(CAMERA_X,  0.1125, CAMERA_Z),
-        new Rotation3d(0.0, Units.degreesToRadians(-CAMERA_PITCH), Units.degreesToRadians(28.5))
+        new Translation3d(CAMERA_X,  CAMERA_Y, CAMERA_Z),
+        new Rotation3d(CAMERA_ROLL, CAMERA_PITCH, Units.degreesToRadians(CAMERA_YAW))
     );
 
     private final AprilTagFieldLayout fieldLayout;
