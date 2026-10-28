@@ -7,7 +7,9 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -50,12 +52,11 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
     //   CAMERA_X  = how far forward the lens is from the robot center (you know, x) (meters)
     //   CAMERA_Y  = how far over the lens is from the robot center (you know, y) (also meters)
     //   CAMERA_Z  = how high the lens is off the floor (meters)
-    //   CAMERA_PITCH = upward tilt angle (positive = tilted up, degrees)
     // -----------------------------------------------------------------------
-    private static final double CAMERA_X     = 0.344; // TODO: measure
-    private static final double CAMERA_Y     = 0; // TODO: measure
+    private static final double CAMERA_X     = 0.3683;
+    private static final double CAMERA_Y     = 0.1124966;
     private static final double CAMERA_Z     = 0.2714625;
-    
+
     private static final double CAMERA_ROLL = 0;
     private static final double CAMERA_YAW = 28.5;
     private static final double CAMERA_PITCH = 0;
@@ -116,6 +117,7 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
     }
 
     private void processCamera(PhotonCamera camera, PhotonPoseEstimator estimator) {
+        // System.out.println("676767");
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
         for (PhotonPipelineResult result : results) {
             if (!result.hasTargets()) continue;
@@ -126,22 +128,71 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
                 continue;
             }
 
+// System.out.println("0");
+            
             // Try multi-tag first (most accurate), fall back to lowest-ambiguity single-tag
-            Optional<EstimatedRobotPose> estimated = estimator.estimateCoprocMultiTagPose(result);
-            if (estimated.isEmpty()) {
-                estimated = estimator.estimateLowestAmbiguityPose(result);
+            // Optional<EstimatedRobotPose> estimated = estimator.estimateCoprocMultiTagPose(result);
+            // result.getMultiTagResult();
+            // if (estimated.isEmpty()) {
+                // estimated = estimator.estimateLowestAmbiguityPose(result);
+            // }
+
+        PhotonTrackedTarget lowestAmbiguityTarget = null;
+
+        double lowestAmbiguityScore = 10;
+
+        for (PhotonTrackedTarget target : result.targets) {
+            double targetPoseAmbiguity = target.getPoseAmbiguity();
+            // Make sure the target is a Fiducial target.
+            if (targetPoseAmbiguity != -1 && targetPoseAmbiguity < lowestAmbiguityScore) {
+                // System.out.println("0");
+                lowestAmbiguityScore = targetPoseAmbiguity; // NOT HAPPENING
+                lowestAmbiguityTarget = target; // NOT HSPPRNONG
             }
+        }
+
+        // Although there are confirmed to be targets, none of them may be fiducial
+        // targets.
+        if (lowestAmbiguityTarget == null) {
+            // HSPPENING
+            // System.err.println("AAAAAAAA");
+        }
+
+        // int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
+
+        // Optional<Pose3d> targetPosition = fieldTags.getTagPose(targetFiducialId);
+
+        // if (targetPosition.isEmpty()) {
+        //     System.err.println("AAAAAAAA2");
+        //     // reportFiducialPoseError(targetFiducialId);
+        //     // return Optional.empty();
+        // }
+
+        // return Optional.of(
+        //         new EstimatedRobotPose(
+        //                 targetPosition
+        //                         .get()
+        //                         .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
+        //                         .transformBy(robotToCamera.inverse()),
+        //                 cameraResult.getTimestampSeconds(),
+        //                 cameraResult.getTargets(),
+        //                 PoseStrategy.LOWEST_AMBIGUITY));
+
+            Optional<EstimatedRobotPose> estimated = estimator.estimateLowestAmbiguityPose(result);
+
             if (estimated.isEmpty()) continue;
 
             Pose2d robotPose = estimated.get().estimatedPose.toPose2d();
 
-            // Discard poses that land outside the field boundary
-            if (robotPose.getX() < -FIELD_BORDER_MARGIN
-                    || robotPose.getX() > FIELD_LENGTH + FIELD_BORDER_MARGIN
-                    || robotPose.getY() < -FIELD_BORDER_MARGIN
-                    || robotPose.getY() > FIELD_WIDTH + FIELD_BORDER_MARGIN) {
-                continue;
-            }
+            // System.out.println("1");
+
+            // // Discard poses that land outside the field boundary
+            // if (robotPose.getX() < -FIELD_BORDER_MARGIN
+            //         || robotPose.getX() > FIELD_LENGTH + FIELD_BORDER_MARGIN
+            //         || robotPose.getY() < -FIELD_BORDER_MARGIN
+            //         || robotPose.getY() > FIELD_WIDTH + FIELD_BORDER_MARGIN) {
+            //     continue;
+            // }
 
             // Average distance to all visible tags
             int numTags = 0;
@@ -155,6 +206,7 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
                 }
             }
             if (numTags == 0) continue;
+            // System.out.println("6");
 
             double avgDist = totalDist / numTags;
 
