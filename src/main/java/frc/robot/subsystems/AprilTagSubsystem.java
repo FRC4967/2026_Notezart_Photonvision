@@ -127,72 +127,16 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
                     && result.getBestTarget().getPoseAmbiguity() > AMBIGUITY_THRESHOLD) {
                 continue;
             }
-
-// System.out.println("0");
             
             // Try multi-tag first (most accurate), fall back to lowest-ambiguity single-tag
-            // Optional<EstimatedRobotPose> estimated = estimator.estimateCoprocMultiTagPose(result);
-            // result.getMultiTagResult();
-            // if (estimated.isEmpty()) {
-                // estimated = estimator.estimateLowestAmbiguityPose(result);
-            // }
-
-        PhotonTrackedTarget lowestAmbiguityTarget = null;
-
-        double lowestAmbiguityScore = 10;
-
-        for (PhotonTrackedTarget target : result.targets) {
-            double targetPoseAmbiguity = target.getPoseAmbiguity();
-            // Make sure the target is a Fiducial target.
-            if (targetPoseAmbiguity != -1 && targetPoseAmbiguity < lowestAmbiguityScore) {
-                // System.out.println("0");
-                lowestAmbiguityScore = targetPoseAmbiguity; // NOT HAPPENING
-                lowestAmbiguityTarget = target; // NOT HSPPRNONG
+            Optional<EstimatedRobotPose> estimated = estimator.estimateCoprocMultiTagPose(result);
+            if (estimated.isEmpty()) {
+                continue;
             }
-        }
-
-        // Although there are confirmed to be targets, none of them may be fiducial
-        // targets.
-        if (lowestAmbiguityTarget == null) {
-            // HSPPENING
-            // System.err.println("AAAAAAAA");
-        }
-
-        // int targetFiducialId = lowestAmbiguityTarget.getFiducialId();
-
-        // Optional<Pose3d> targetPosition = fieldTags.getTagPose(targetFiducialId);
-
-        // if (targetPosition.isEmpty()) {
-        //     System.err.println("AAAAAAAA2");
-        //     // reportFiducialPoseError(targetFiducialId);
-        //     // return Optional.empty();
-        // }
-
-        // return Optional.of(
-        //         new EstimatedRobotPose(
-        //                 targetPosition
-        //                         .get()
-        //                         .transformBy(lowestAmbiguityTarget.getBestCameraToTarget().inverse())
-        //                         .transformBy(robotToCamera.inverse()),
-        //                 cameraResult.getTimestampSeconds(),
-        //                 cameraResult.getTargets(),
-        //                 PoseStrategy.LOWEST_AMBIGUITY));
-
-            Optional<EstimatedRobotPose> estimated = estimator.estimateLowestAmbiguityPose(result);
 
             if (estimated.isEmpty()) continue;
 
             Pose2d robotPose = estimated.get().estimatedPose.toPose2d();
-
-            // System.out.println("1");
-
-            // // Discard poses that land outside the field boundary
-            // if (robotPose.getX() < -FIELD_BORDER_MARGIN
-            //         || robotPose.getX() > FIELD_LENGTH + FIELD_BORDER_MARGIN
-            //         || robotPose.getY() < -FIELD_BORDER_MARGIN
-            //         || robotPose.getY() > FIELD_WIDTH + FIELD_BORDER_MARGIN) {
-            //     continue;
-            // }
 
             // Average distance to all visible tags
             int numTags = 0;
@@ -206,7 +150,6 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
                 }
             }
             if (numTags == 0) continue;
-            // System.out.println("6");
 
             double avgDist = totalDist / numTags;
 

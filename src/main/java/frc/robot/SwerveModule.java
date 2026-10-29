@@ -181,15 +181,15 @@ public class SwerveModule {
     }
 
     public void setTeleopDesiredState(SwerveModuleState state) {
-        // SwerveModuleState optimizedState = SwerveModuleState.optimize(state, getState().angle);
-        double driveMotorPower = state.speedMetersPerSecond;
+        SwerveModuleState optimizedState = SwerveModuleState.optimize(state, getState().angle);
+        double driveMotorPower = optimizedState.speedMetersPerSecond;
         if(Math.abs(driveMotorPower) < 0.01){
             stop();
             return;
         }
         double currentAngle = getDirectionPosRad();
         SmartDashboard.putNumber("RandomLinesTroubleshooting/" + driveMotor.getDeviceId() + " current angle", Math.toDegrees(currentAngle));
-        double targetAngle  = state.angle.getRadians();
+        double targetAngle  = optimizedState.angle.getRadians();
         SmartDashboard.putNumber("RandomLinesTroubleshooting/" + driveMotor.getDeviceId() + " targetAngle", Math.toDegrees(targetAngle));
         double directionMotorPower = directionPID.calculate(currentAngle, targetAngle);
         SmartDashboard.putNumber("RandomLinesTroubleshooting/" + driveMotor.getDeviceId() + " directionMotorPower", directionMotorPower);

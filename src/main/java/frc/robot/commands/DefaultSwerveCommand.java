@@ -72,7 +72,7 @@ public class DefaultSwerveCommand extends Command{
         // }
 
 
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-ySpeed, -xSpeed, zSpeed, swerveSubsystem.getGyroRotationRaw());
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-ySpeed/5, -xSpeed/5, zSpeed/5, swerveSubsystem.getGyroRotationRaw());
         SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
         swerveSubsystem.setTeleopModuleStates(swerveModuleStates);
         super.execute();
