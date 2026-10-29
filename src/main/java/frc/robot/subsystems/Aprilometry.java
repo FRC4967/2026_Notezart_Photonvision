@@ -15,7 +15,14 @@ public class Aprilometry extends SubsystemBase implements BotPoseSource{
     private Field2d field = new Field2d();
 
     // Initial odometry trust (x, y, theta) — std devs in meters/radians
-    private static final double ODOMETRY_TRUST = 0.1;
+    /** Standard deviation of odometry in meters */
+    private static final double ODOMETRY_STD = 0.2;
+    /** Standard deviation of odometry in radianss */
+    private static final double ODOMETRY_ROT_STD = 0;
+    /** Standard deviation of vision in meterss */
+    private static final double VISION_STD = 0.1;
+    /** Standard deviation of vision in radians */
+    private static final double VISION_ROT_STD = Math.PI/9;
 
     public Aprilometry(AprilTagSubsystem aprilTags, SwerveSubsystem drivetrain) {
         this(aprilTags, drivetrain, false);
@@ -31,8 +38,8 @@ public class Aprilometry extends SubsystemBase implements BotPoseSource{
             drivetrain.getGyroRotation(),
             drivetrain.getSwerveModulePositions(),
             getPose(),
-            VecBuilder.fill(ODOMETRY_TRUST, ODOMETRY_TRUST, ODOMETRY_TRUST),
-            VecBuilder.fill(0.9, 0.9, 0.9));
+            VecBuilder.fill(ODOMETRY_STD, ODOMETRY_STD, ODOMETRY_ROT_STD),
+            VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
 
         SmartDashboard.putData("Aprilometry field", field);
     }
@@ -41,12 +48,10 @@ public class Aprilometry extends SubsystemBase implements BotPoseSource{
     public void periodic() {
         poseEstimator.update(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions());
 
-        if (isCorrectingOdometry) {
-            for (AprilTagSubsystem.VisionObservation obs : aprilTags.getObservations()) {
-                poseEstimator.addVisionMeasurement(obs.pose(), obs.timestamp(), obs.stdDevs());
-            }
-            drivetrain.setPose(poseEstimator.getEstimatedPosition());
-        }
+        poseEstimator.addVisionMeasurement(aprilTags.getPose(), 99999999, VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
+
+        drivetrain.setPose(poseEstimator.getEstimatedPosition());
+        
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putNumber("Aprilometry/X", poseEstimator.getEstimatedPosition().getX());

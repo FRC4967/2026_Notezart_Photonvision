@@ -79,6 +79,9 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
 
     private List<VisionObservation> latestObservations = new ArrayList<>();
 
+    Pose2d robotPose = new Pose2d();
+    Pose2d latestPose = new Pose2d();
+
     public AprilTagSubsystem() {
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(
@@ -104,7 +107,7 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
         processCamera(leftCam,  leftEstimator);
 
         if (!latestObservations.isEmpty()) {
-            Pose2d latestPose = latestObservations.get(latestObservations.size() - 1).pose();
+            latestPose = latestObservations.get(latestObservations.size() - 1).pose();
             field.setRobotPose(latestPose);
             SmartDashboard.putNumber("Vision/Pose X", latestPose.getX());
             SmartDashboard.putNumber("Vision/Pose Y", latestPose.getY());
@@ -136,7 +139,7 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
 
             if (estimated.isEmpty()) continue;
 
-            Pose2d robotPose = estimated.get().estimatedPose.toPose2d();
+            robotPose = estimated.get().estimatedPose.toPose2d();
 
             // Average distance to all visible tags
             int numTags = 0;
@@ -175,8 +178,9 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
 
     @Override
     public Pose2d getPose() {
-        if (latestObservations.isEmpty()) return null;
-        return latestObservations.get(latestObservations.size() - 1).pose();
+        // if (latestObservations.isEmpty()) return null;
+        // return latestObservations.get(latestObservations.size() - 1).pose();
+        return latestPose;
     }
 
     @Override
