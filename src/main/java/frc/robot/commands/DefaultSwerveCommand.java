@@ -26,7 +26,7 @@ public class DefaultSwerveCommand extends Command{
     private double zSpeed;
 
     private final PIDController yawController = new PIDController(20, 0, 0.5);
-    private final double deadBand = 0.3;
+    private final double deadBand = 0.15;
 
     /**
      * 
@@ -74,7 +74,7 @@ public class DefaultSwerveCommand extends Command{
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(-ySpeed/5, -xSpeed/5, zSpeed/5, swerveSubsystem.getGyroRotationRaw());
         SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setTeleopModuleStates(swerveModuleStates);
+        swerveSubsystem.drive(swerveModuleStates);
         super.execute();
     }
 

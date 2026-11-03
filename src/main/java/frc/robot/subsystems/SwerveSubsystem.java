@@ -33,7 +33,7 @@ import frc.robot.SwerveModule;
 import frc.robot.vision.BotPoseSourceType;
 
 public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
-   //#region -*-*- Constants -*-*-
+   //#region  Constants 
 
     /** in meters */
     private final double xVal = (0.625 / 2);
@@ -188,7 +188,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
         botVector = Vector2D.of(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY());
 
-        //#region -*-*-*- Doucumentation on smart dashboard for testing -*-*-*-
+        //#region *- Doucumentation on smart dashboard for testing *-
         String[] moduleNames = {"FL", "FR", "BL", "BR"};
         for (int i = 0; i < 4; i++) {
             SmartDashboard.putNumber("Swerve/" + moduleNames[i] + " Angle (deg)", swerveModules[i].getDirectionPosDeg());
@@ -244,7 +244,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         }
     }
 
-    // #region -*-*-*-*-*- gets -*-*-*-*-*-
+    // #region * gets *
 
     /**
      * @return the gyro angle according to alliance in degrees in a -180 to 180 range.
@@ -410,7 +410,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     // #endregion
 
-    // #region -*-*-*-*-*- sets -*-*-*-*-*-
+    // #region * sets *
 
     /**
      *  Sets the entire robot's desired states using the setDesiredStates function in the swerveModule class.
@@ -423,7 +423,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         }
     }
 
-    public void setTeleopModuleStates(SwerveModuleState[] desiredStates) {
+    public void drive(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, maxSpeed);
         for (int i = 0; i < 4; i++) {
             swerveModules[i].setTeleopDesiredState(desiredStates[i]);
@@ -460,7 +460,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     // #endregion
 
-    // #region -*-*-*-*-*- booleans -*-*-*-
+    // #region * booleans *-
     
     /**
      * calculates whether the robot is in range to shoot to it's alliance speaker.

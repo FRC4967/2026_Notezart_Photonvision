@@ -48,7 +48,7 @@ public class AutonShooterCommand extends Command {
         // } 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, -swerveSubsystem.getPercentageToAngleToSpeaker(), swerveSubsystem.getGyroRotationRaw());
         SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setTeleopModuleStates(swerveModuleStates);
+        swerveSubsystem.drive(swerveModuleStates);
         
         double distToSpeaker = swerveSubsystem.getDistanceFromBotToSpeaker();
         shooterSubsystem.autonAngleToSpeaker(distToSpeaker);

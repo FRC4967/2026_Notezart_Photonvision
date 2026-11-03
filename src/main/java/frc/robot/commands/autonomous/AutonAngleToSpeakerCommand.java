@@ -30,7 +30,7 @@ public class AutonAngleToSpeakerCommand extends Command {
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, -swerveSubsystem.getPercentageToAngleToSpeaker(), swerveSubsystem.getGyroRotationRaw());
         SwerveModuleState[] swerveModuleStates = swerveSubsystem.getKinematics().toSwerveModuleStates(chassisSpeeds);
-        swerveSubsystem.setTeleopModuleStates(swerveModuleStates);
+        swerveSubsystem.drive(swerveModuleStates);
     }
 
     @Override
