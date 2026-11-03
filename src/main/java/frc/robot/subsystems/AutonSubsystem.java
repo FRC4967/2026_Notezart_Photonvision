@@ -46,10 +46,11 @@ import frc.robot.commands.autonomous.AutonIntakeCommand;
 import frc.robot.commands.autonomous.AutonIntakeWaitCommand;
 import frc.robot.commands.autonomous.AutonShooterCommand;
 import frc.robot.commands.autonomous.TrajectoryFollowCommand;
+import frc.robot.vision.CombinedField;
 
 public class AutonSubsystem extends SubsystemBase{
     private final SwerveSubsystem swerveSubsystem;
-    private final Aprilometry aprilometry;
+    private final CombinedField aprilometry;
     private ShooterSubsystem shooterSubsystem;
     private IntakeSubsystem intakeSubsystem;
     private CompliantWheelsSubsystem compliantWheelsSubsystem;
@@ -109,7 +110,7 @@ public class AutonSubsystem extends SubsystemBase{
     private TrajectoryConfig config = new TrajectoryConfig(4, 2.5);
 
 
-    public AutonSubsystem(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, CompliantWheelsSubsystem compliantWheelsSubsystem,/* PhotonVision photonVision,*/ Aprilometry aprilometry, TrajectoryWaypoints trajectoryWaypoints) {
+    public AutonSubsystem(SwerveSubsystem swerveSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, CompliantWheelsSubsystem compliantWheelsSubsystem,/* PhotonVision photonVision,*/ CombinedField aprilometry, TrajectoryWaypoints trajectoryWaypoints) {
         this.swerveSubsystem = swerveSubsystem;
         this.shooterSubsystem = shooterSubsystem;
         this.intakeSubsystem = intakeSubsystem;

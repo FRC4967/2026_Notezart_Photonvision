@@ -30,8 +30,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.AngleUtil;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
+import frc.robot.vision.BotPoseSourceType;
 
-public class SwerveSubsystem extends SubsystemBase implements BotPoseSource{
+public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
    //#region -*-*- Constants -*-*-
 
     /** in meters */

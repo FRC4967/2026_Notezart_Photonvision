@@ -4,20 +4,20 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Aprilometry;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.vision.CombinedField;
 
 public class OdometryResetCommand extends Command{
-    private final Aprilometry aprilometry;
+    private final CombinedField aprilometry;
     private SwerveSubsystem swerveSubsystem;
     private Pose2d updatePose;
 
     /** resets the odometry to against the speaker in case limelight breaks and odometry is off */
-    public OdometryResetCommand(Aprilometry aprilometry, SwerveSubsystem swerveSubsystem){
+    public OdometryResetCommand(CombinedField aprilometry, SwerveSubsystem swerveSubsystem){
         this(aprilometry, swerveSubsystem, new Pose2d());
     }
 
-    public OdometryResetCommand(Aprilometry aprilometry, SwerveSubsystem swerveSubsystem, Pose2d updatePose){
+    public OdometryResetCommand(CombinedField aprilometry, SwerveSubsystem swerveSubsystem, Pose2d updatePose){
         this.aprilometry = aprilometry;
         this.updatePose = updatePose;
         this.swerveSubsystem = swerveSubsystem;

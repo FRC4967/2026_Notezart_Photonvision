@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.vision;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -6,11 +6,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.SwerveSubsystem;
 
-public class Aprilometry extends SubsystemBase implements BotPoseSource{
+public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     private boolean isCorrectingOdometry;
     private SwerveSubsystem drivetrain;
-    private AprilTagSubsystem aprilTags;
+    private VisionField aprilTags;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field = new Field2d();
 
@@ -24,11 +25,11 @@ public class Aprilometry extends SubsystemBase implements BotPoseSource{
     /** Standard deviation of vision in radians */
     private static final double VISION_ROT_STD = Math.PI/9;
 
-    public Aprilometry(AprilTagSubsystem aprilTags, SwerveSubsystem drivetrain) {
+    public CombinedField(VisionField aprilTags, SwerveSubsystem drivetrain) {
         this(aprilTags, drivetrain, false);
     }
 
-    public Aprilometry(AprilTagSubsystem aprilTags, SwerveSubsystem drivetrain, boolean isCorrectingOdometry) {
+    public CombinedField(VisionField aprilTags, SwerveSubsystem drivetrain, boolean isCorrectingOdometry) {
         super();
         this.aprilTags = aprilTags;
         this.drivetrain = drivetrain;
@@ -41,7 +42,7 @@ public class Aprilometry extends SubsystemBase implements BotPoseSource{
             VecBuilder.fill(ODOMETRY_STD, ODOMETRY_STD, ODOMETRY_ROT_STD),
             VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
 
-        SmartDashboard.putData("Aprilometry field", field);
+        SmartDashboard.putData("Combined field", field);
     }
 
     @Override

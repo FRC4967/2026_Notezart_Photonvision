@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.GyroResetCommand;
 import frc.robot.commands.OdometryResetCommand;
-import frc.robot.subsystems.Aprilometry;
 import frc.robot.subsystems.AutonSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.vision.CombinedField;
 
 public class AutonTrajectoryTestCommand extends Command {
     private AutonSubsystem autonSubsystem;
     private SwerveSubsystem swerveSubsystem;
-    private Aprilometry aprilometry;
+    private CombinedField aprilometry;
 
     private SequentialCommandGroup sequence;
 
@@ -29,7 +29,7 @@ public class AutonTrajectoryTestCommand extends Command {
 
     private final TrajectoryConfig testingConfig = new TrajectoryConfig(4, 2.5);
 
-    public AutonTrajectoryTestCommand(AutonSubsystem autonSubsystem, SwerveSubsystem swerveSubsystem, Aprilometry aprilometry) {
+    public AutonTrajectoryTestCommand(AutonSubsystem autonSubsystem, SwerveSubsystem swerveSubsystem, CombinedField aprilometry) {
         this.autonSubsystem = autonSubsystem;
         this.swerveSubsystem = swerveSubsystem;
         this.aprilometry = aprilometry;

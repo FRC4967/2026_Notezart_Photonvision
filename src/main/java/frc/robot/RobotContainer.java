@@ -19,9 +19,6 @@ import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.ShootCommand;
 
 import frc.robot.commands.OdometryResetCommand;
-
-import frc.robot.subsystems.AprilTagSubsystem;
-import frc.robot.subsystems.Aprilometry;
 import frc.robot.subsystems.AutonSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CompliantWheelsSubsystem;
@@ -29,12 +26,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 // import frc.robot.subsystems.PhotonVision;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.vision.VisionField;
+import frc.robot.vision.CombinedField;
 import frc.robot.subsystems.LightSubsystem;
 
 public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
-  private final Aprilometry aprilometry = new Aprilometry(aprilTagSubsystem, swerveSubsystem);
+  private final VisionField aprilTagSubsystem = new VisionField();
+  private final CombinedField aprilometry = new CombinedField(aprilTagSubsystem, swerveSubsystem);
   private final TrajectoryWaypoints trajectoryWaypoints = new TrajectoryWaypoints();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();

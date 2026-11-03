@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.vision;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
+public class VisionField extends SubsystemBase implements BotPoseSourceType {
 
     public record VisionObservation(Pose2d pose, double timestamp, Matrix<N3, N1> stdDevs) {}
 
@@ -82,7 +82,7 @@ public class AprilTagSubsystem extends SubsystemBase implements BotPoseSource {
     Pose2d robotPose = new Pose2d();
     Pose2d latestPose = new Pose2d();
 
-    public AprilTagSubsystem() {
+    public VisionField() {
         try {
             fieldLayout = AprilTagFieldLayout.loadFromResource(
                 AprilTagFields.k2026RebuiltWelded.m_resourceFile);

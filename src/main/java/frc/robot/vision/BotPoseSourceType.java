@@ -1,8 +1,10 @@
-package frc.robot.subsystems;
+package frc.robot.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 
-public interface BotPoseSource {
+public interface BotPoseSourceType {
+    // This defines swerve, direct vision, and combined field as the same type of thing (A source of the robot position)
+
     /**
      * @return the BotPoseSource location of the robot.
     */

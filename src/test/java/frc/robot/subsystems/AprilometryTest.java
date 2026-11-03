@@ -5,14 +5,16 @@ import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.vision.BotPoseSourceType;
+import frc.robot.vision.CombinedField;
 
 public class AprilometryTest {
 
-    private Aprilometry aprilometry;
+    private CombinedField aprilometry;
     private MockPoseSource aprilSource;
     private MockPoseSource odoSource;
 
-    static class MockPoseSource implements BotPoseSource {
+    static class MockPoseSource implements BotPoseSourceType {
 
         Pose2d pose = new Pose2d();
 
