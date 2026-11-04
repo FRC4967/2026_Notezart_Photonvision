@@ -3,6 +3,7 @@ package frc.robot.vision;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -68,11 +69,11 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     @Override
     public void setPose(Pose2d newPose) {
         drivetrain.setPose(newPose);
-        poseEstimator.resetPosition(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions(), newPose);
+        poseEstimator.resetPosition(drivetrain.getGyroRotationRaw(), drivetrain.getSwerveModulePositions(), new Pose2d(newPose.getX(), newPose.getY(), new Rotation2d(17))/* TODO EVERYTHING HINGES ON THIS NUMBER FOR SOME UNGODLY REASON AND ALSO TE GYRO IS READING 0 NOW */);
     }
 
     public void setOdometryCorrection(boolean isCorrectingOdometry) {
-        poseEstimator.resetPosition(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions(), drivetrain.getPose());
+        poseEstimator.resetPosition(drivetrain.getGyroRotationRaw(), drivetrain.getSwerveModulePositions(), drivetrain.getPose());
         this.isCorrectingOdometry = isCorrectingOdometry;
     }
 }

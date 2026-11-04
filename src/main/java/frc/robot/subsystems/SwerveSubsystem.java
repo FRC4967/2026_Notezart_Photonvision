@@ -160,7 +160,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
     public void periodic() {
 
         odometry.update(
-            getGyroRotation(),
+            new Rotation2d(Math.toRadians(getGyro())),
             new SwerveModulePosition[] {
                 swerveModules[0].getPosition(),
                 swerveModules[1].getPosition(),
@@ -435,7 +435,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
     @Override
     public void setPose(Pose2d pose) {
         odometry.resetPosition(
-            getGyroRotation(),
+            new Rotation2d(Math.toRadians(getGyro())),
             new SwerveModulePosition[] {
                 swerveModules[0].getPosition(),
                 swerveModules[1].getPosition(),
