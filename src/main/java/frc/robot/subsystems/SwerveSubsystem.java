@@ -280,7 +280,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
      */
     public Rotation2d getGyroRotationRaw() {
         // gets a rotation2D translation of gyro angle
-        return Rotation2d.fromDegrees(-getGyroRaw());
+        return Rotation2d.fromDegrees(getGyroRaw());
     }
 
     /**
