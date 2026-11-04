@@ -21,7 +21,7 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     /** Standard deviation of odometry in radianss */
     private static final double ODOMETRY_ROT_STD = 0;
     /** Standard deviation of vision in meterss */
-    private static final double VISION_STD = 0.1;
+    private static final double VISION_STD = 0.5;
     /** Standard deviation of vision in radians */
     private static final double VISION_ROT_STD = Math.PI/9;
 
@@ -52,7 +52,6 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
         poseEstimator.addVisionMeasurement(aprilTags.getPose(), 99999999, VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
 
         drivetrain.setPose(poseEstimator.getEstimatedPosition());
-        
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putNumber("Aprilometry/X", poseEstimator.getEstimatedPosition().getX());
