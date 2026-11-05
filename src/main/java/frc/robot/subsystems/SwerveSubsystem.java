@@ -142,7 +142,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
         odometry = new SwerveDriveOdometry(
             DRIVE_KINEMATICS,
-            getGyroRotation(),
+            new Rotation2d(Math.toRadians(getGyro())),
             new SwerveModulePosition[] {
                 swerveModules[0].getPosition(),
                 swerveModules[1].getPosition(),
@@ -250,7 +250,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
      * @return the gyro angle according to alliance in degrees in a -180 to 180 range.
      */
     public double getGyro() {
-        return Math.IEEEremainder(gyro.getAngle() + gyroAllianceChange, 360);
+        return Math.IEEEremainder(gyro.getAngle() /*+ gyroAllianceChange*/, 360);
     }
 
     /**

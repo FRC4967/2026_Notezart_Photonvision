@@ -68,11 +68,11 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     @Override
     public void setPose(Pose2d newPose) {
         drivetrain.setPose(newPose);
-        poseEstimator.resetPosition(drivetrain.getGyroRotationRaw(), drivetrain.getSwerveModulePositions(), new Pose2d(newPose.getX(), newPose.getY(), new Rotation2d(17))/* TODO EVERYTHING HINGES ON THIS NUMBER FOR SOME UNGODLY REASON AND ALSO TE GYRO IS READING 0 NOW */);
+        poseEstimator.resetPosition(new Rotation2d(Math.toRadians(drivetrain.getGyro())), drivetrain.getSwerveModulePositions(), new Pose2d(newPose.getX(), newPose.getY(), new Rotation2d(Math.toRadians(drivetrain.getGyro())))/* TODO EVERYTHING HINGES ON THIS NUMBER FOR SOME UNGODLY REASON AND ALSO TE GYRO IS READING 0 NOW */);
     }
 
     public void setOdometryCorrection(boolean isCorrectingOdometry) {
-        poseEstimator.resetPosition(drivetrain.getGyroRotationRaw(), drivetrain.getSwerveModulePositions(), drivetrain.getPose());
+        poseEstimator.resetPosition(new Rotation2d(Math.toRadians(drivetrain.getGyro())), drivetrain.getSwerveModulePositions(), new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), new Rotation2d(Math.toRadians(drivetrain.getGyro()))));
         this.isCorrectingOdometry = isCorrectingOdometry;
     }
 }
