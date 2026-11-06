@@ -47,18 +47,18 @@ public class VisionField extends SubsystemBase implements BotPoseSourceType {
     // -----------------------------------------------------------------------
     // Known from design spec:
     //   Lateral offset:  ±11.25 cm from robot centerline
-    //   Yaw:             28.5° outward (right cam = -28.5°, left cam = +28.5°)
-    //
+    //   Yaw:             ±28.5° outward (right cam = -28.5°, left cam = +28.5°)
+    // 
     //   CAMERA_X  = how far forward the lens is from the robot center (you know, x) (meters)
     //   CAMERA_Y  = how far over the lens is from the robot center (you know, y) (also meters)
     //   CAMERA_Z  = how high the lens is off the floor (meters)
     // -----------------------------------------------------------------------
     private static final double CAMERA_X     = -0.3683;
-    private static final double CAMERA_Y     = 0.1124966;
+    private static final double CAMERA_Y     = -0.1124966;
     private static final double CAMERA_Z     = 0.2714625;
 
     private static final double CAMERA_ROLL = 0;
-    private static final double CAMERA_YAW = 151.5;
+    private static final double CAMERA_YAW = -151.5;
     private static final double CAMERA_PITCH = 0;
 
     private static final Transform3d ROBOT_TO_RIGHT_CAM = new Transform3d(
