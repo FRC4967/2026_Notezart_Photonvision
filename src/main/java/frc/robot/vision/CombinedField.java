@@ -12,17 +12,19 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     private boolean isCorrectingOdometry;
     private SwerveSubsystem drivetrain;
-    private VisionField aprilTags;
+    private VisionField visionField;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field = new Field2d();
 
     // Initial odometry trust (x, y, theta) — std devs in meters/radians
     /** Standard deviation of odometry in meters */
+    private static final double ODOMETRY_MODIFICATION_RATE = 0.5;
+
     private static final double ODOMETRY_STD = 0.2;
     /** Standard deviation of odometry in radianss */
     private static final double ODOMETRY_ROT_STD = 0;
     /** Standard deviation of vision in meterss */
-    private static final double VISION_STD = 0.5;
+    private static final double VISION_STD = 0;
     /** Standard deviation of vision in radians */
     private static final double VISION_ROT_STD = Math.PI/9;
 
@@ -32,7 +34,7 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
 
     public CombinedField(VisionField aprilTags, SwerveSubsystem drivetrain, boolean isCorrectingOdometry) {
         super();
-        this.aprilTags = aprilTags;
+        this.visionField = aprilTags;
         this.drivetrain = drivetrain;
         this.isCorrectingOdometry = isCorrectingOdometry;
         poseEstimator = new SwerveDrivePoseEstimator(
@@ -50,9 +52,24 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     public void periodic() {
         poseEstimator.update(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions());
 
-        poseEstimator.addVisionMeasurement(aprilTags.getPose(), 99999999, VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
+        poseEstimator.addVisionMeasurement(visionField.getPose(), 99999999, VecBuilder.fill(VISION_STD, VISION_STD, VISION_ROT_STD));
 
-        drivetrain.setPose(poseEstimator.getEstimatedPosition());
+        double driveVisionDiscontinuity = Math.hypot(
+            Math.pow(poseEstimator.getEstimatedPosition().getX()-drivetrain.getPose().getX(), 2),
+            Math.pow(poseEstimator.getEstimatedPosition().getY()-drivetrain.getPose().getY(), 2));
+
+        double driveVisionAdjustment = 0;
+
+        if (driveVisionDiscontinuity<2.5) {
+            driveVisionAdjustment = driveVisionDiscontinuity*(1/(1.31*Math.pow(driveVisionDiscontinuity, 7/5)));
+        } else {
+            driveVisionAdjustment = 1;
+        }
+
+        drivetrain.setPose(new Pose2d(
+            poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*1-driveVisionAdjustment,
+            poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*1-driveVisionAdjustment, 
+            drivetrain.getGyroRotation()));
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
         SmartDashboard.putNumber("Aprilometry/X", poseEstimator.getEstimatedPosition().getX());
