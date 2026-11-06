@@ -61,17 +61,18 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
         double driveVisionAdjustment = 0;
 
         if (driveVisionDiscontinuity<2.5) {
-            driveVisionAdjustment = driveVisionDiscontinuity*(1/(1.31*Math.pow(driveVisionDiscontinuity, 7/5)));
+            driveVisionAdjustment = driveVisionDiscontinuity*(1/(1.63*Math.pow(driveVisionDiscontinuity, 1/2))*
+                (Math.pow(driveVisionDiscontinuity-0.4,1/3)+0.75)/2);
         } else {
             driveVisionAdjustment = 1;
         }
 
         drivetrain.setPose(new Pose2d(
-            poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*1-driveVisionAdjustment,
-            poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*1-driveVisionAdjustment, 
+            poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*(1-driveVisionAdjustment),
+            poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*(1-driveVisionAdjustment), 
             drivetrain.getGyroRotation()));
 
-        field.setRobotPose(poseEstimator.getEstimatedPosition());
+        field.setRobotPose(drivetrain.getPose());
         SmartDashboard.putNumber("Aprilometry/X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Aprilometry/Y", poseEstimator.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Aprilometry/Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
