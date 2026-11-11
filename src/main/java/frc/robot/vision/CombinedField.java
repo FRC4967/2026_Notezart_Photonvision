@@ -67,10 +67,14 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
             driveVisionAdjustment = 1;
         }
 
-        drivetrain.setPose(new Pose2d(
-            poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*(1-driveVisionAdjustment),
-            poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*(1-driveVisionAdjustment), 
-            drivetrain.getGyroRotation()));
+        if ((visionField.getLastPose().getX() != visionField.getPose().getX()) ||
+            (visionField.getLastPose().getY() != visionField.getPose().getY())) {
+
+            drivetrain.setPose(new Pose2d(
+                poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*(1-driveVisionAdjustment),
+                poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*(1-driveVisionAdjustment), 
+                drivetrain.getGyroRotation()));
+        }
 
         field.setRobotPose(drivetrain.getPose());
         SmartDashboard.putNumber("Aprilometry/X", poseEstimator.getEstimatedPosition().getX());
@@ -86,11 +90,11 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
     @Override
     public void setPose(Pose2d newPose) {
         drivetrain.setPose(newPose);
-        poseEstimator.resetPosition(new Rotation2d(Math.toRadians(drivetrain.getGyro())), drivetrain.getSwerveModulePositions(), new Pose2d(newPose.getX(), newPose.getY(), new Rotation2d(Math.toRadians(drivetrain.getGyro())))/* TODO EVERYTHING HINGES ON THIS NUMBER FOR SOME UNGODLY REASON AND ALSO TE GYRO IS READING 0 NOW */);
+        poseEstimator.resetPosition(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions(), new Pose2d(newPose.getX(), newPose.getY(), drivetrain.getGyroRotation()));
     }
 
     public void setOdometryCorrection(boolean isCorrectingOdometry) {
-        poseEstimator.resetPosition(new Rotation2d(Math.toRadians(drivetrain.getGyro())), drivetrain.getSwerveModulePositions(), new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), new Rotation2d(Math.toRadians(drivetrain.getGyro()))));
+        poseEstimator.resetPosition(drivetrain.getGyroRotation(), drivetrain.getSwerveModulePositions(), new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getGyroRotation()));
         this.isCorrectingOdometry = isCorrectingOdometry;
     }
 }

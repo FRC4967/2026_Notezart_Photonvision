@@ -81,6 +81,7 @@ public class VisionField extends SubsystemBase implements BotPoseSourceType {
 
     Pose2d robotPose = new Pose2d();
     Pose2d latestPose = new Pose2d();
+    Pose2d oldPose = new Pose2d();
 
     public VisionField() {
         try {
@@ -101,6 +102,9 @@ public class VisionField extends SubsystemBase implements BotPoseSourceType {
 
     @Override
     public void periodic() {
+
+        oldPose = latestPose;
+        
         latestObservations.clear();
 
         processCamera(rightCam, rightEstimator);
@@ -174,6 +178,10 @@ public class VisionField extends SubsystemBase implements BotPoseSourceType {
     /** Returns all valid pose observations from both cameras this frame. */
     public List<VisionObservation> getObservations() {
         return latestObservations;
+    }
+
+    public Pose2d getLastPose() {
+        return oldPose;
     }
 
     @Override
