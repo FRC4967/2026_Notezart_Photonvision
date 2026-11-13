@@ -5,7 +5,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class ResetQuestPose extends InstantCommand {
 
-  private SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  private SwerveSubsystem swerveSubsystem;
 
   public ResetQuestPose(SwerveSubsystem swerveSubsystem) {
     this.swerveSubsystem = swerveSubsystem;
