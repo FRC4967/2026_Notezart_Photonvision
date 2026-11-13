@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.apache.commons.geometry.euclidean.twod.Line;
 import org.apache.commons.geometry.euclidean.twod.Lines;
@@ -13,10 +15,15 @@ import org.apache.commons.numbers.core.Precision;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -31,6 +38,9 @@ import frc.robot.AngleUtil;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import frc.robot.vision.BotPoseSourceType;
+import frc.robot.vision.QuestPoseData;
+import gg.questnav.questnav.PoseFrame;
+import gg.questnav.questnav.QuestNav;
 
 public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
    //#region  Constants 
@@ -91,6 +101,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
     private AHRS gyro;
     private double gyroAllianceChange;
     private SwerveDriveOdometry odometry;
+    private Field2d questField;
     private Field2d field;
     private double lineX;
 
@@ -103,6 +114,17 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
     double lastSmartGyroChange = 0;
 
     Timer speedPerSecondTimer;
+
+    /** QuestNav object. Docs: https://questnav.gg */
+    private QuestNav questNav = new QuestNav();
+
+
+    /** Distance from center of robot to quest, as well as quest rotation */
+    private final Transform3d robotToQuest = new Transform3d(
+        // Meters
+        new Translation3d(0.34, -0.0, 0.28),
+        new Rotation3d(0.0, 0.0, 0.0));
+
 
     public SwerveSubsystem() {
 
@@ -154,6 +176,9 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         field = new Field2d();
         field.setRobotPose(odometry.getPoseMeters());
 
+        questField = new Field2d();
+        questField.setRobotPose(getQuestPose());
+
     }
  
     @Override
@@ -169,7 +194,16 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
             }
         );
 
+        // Periodic function needed for questNav
+        questNav.commandPeriodic();
+
         field.setRobotPose(odometry.getPoseMeters());
+        questField.setRobotPose(getQuestPose());
+
+        // Updates odometry using quest if the quest is working correctly
+        if (questNav.isConnected() && questNav.isTracking()) {
+            SmartDashboard.putData("Quest Field", questField);
+        }
 
         alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == Alliance.Red) {
@@ -213,6 +247,35 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         // SmartDashboard.putNumber("BackLeftPos", swerveModules[2].getDrivePos());
         // SmartDashboard.putNumber("BackRightPos", swerveModules[3].getDrivePos());
 
+        /** Logic to monitor the quest 3s's status.
+         * Helpful for driver to see when quest wiring is disconnected,
+         * battery is low, or that quest is ready before a match.
+         * Details on questNav's monitoring here:
+         * https://questnav.gg/docs/getting-started/robot-code#advanced-usage
+         */
+        SmartDashboard.putNumber("QuestNav Battery", questNav.getBatteryPercent().orElse(0));
+        OptionalInt batteryPercentOptional = questNav.getBatteryPercent();
+        if (!questNav.isConnected()) {
+            SmartDashboard.putString("QuestNav Battery Status", "No Quest Detected");
+        } else if (!questNav.isTracking()) {
+            SmartDashboard.putString("QuestNav Battery Status", "Quest not tracking - put on Quest to see message");
+        } else if (batteryPercentOptional.isEmpty()) {
+            SmartDashboard.putString("QuestNav Battery Status", "No battery percentage detected");
+        } else {
+            int batteryPercent = batteryPercentOptional.getAsInt();
+            if (batteryPercent > 80) {
+                SmartDashboard.putString("QuestNav Battery Status", "Excellent - full match capability");
+            } else if (80 >= batteryPercent && batteryPercent > 50) {
+                SmartDashboard.putString("QuestNav Battery Status", "Good - normal operation expected");
+            } else if (50 >= batteryPercent && batteryPercent > 20) {
+                SmartDashboard.putString("QuestNav Battery Status", "Fair - plug in after match");
+            } else if (20 >= batteryPercent && batteryPercent > 10) {
+                SmartDashboard.putString("QuestNav Battery Status", "Low - charge ASAP, monitor closely");
+            } else if (batteryPercent <= 10) {
+                SmartDashboard.putString("QuestNav Battery Status", "Critical - Use manual only");
+            }
+        }
+
         // updateMaxSpeed();
        // SmartDashboard.putNumber("raw doggin", gyro.getAngle());
         //testingUpdates();
@@ -244,7 +307,25 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         }
     }
 
-    // #region * gets *
+    // #region gets
+
+    /**
+     * @return The robot's position as reported by the quest
+     */
+    public List<QuestPoseData> getQuestEstimates() {
+        // For details on this code, see here:
+        // https://questnav.gg/docs/getting-started/robot-code#getting-robot-pose
+
+        PoseFrame[] poseFrames = questNav.getAllUnreadPoseFrames();
+        List<QuestPoseData> poseList = new ArrayList<>();
+
+        for (PoseFrame frame : poseFrames) {
+            Pose3d questPose = frame.questPose3d();
+            poseList.add(new QuestPoseData(questPose.transformBy(robotToQuest.inverse()), frame.dataTimestamp()));
+        }
+        return poseList;
+    }
+
 
     /**
      * @return the gyro angle according to alliance in degrees in a -180 to 180 range.
@@ -410,7 +491,26 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     // #endregion
 
-    // #region * sets *
+    // #region sets
+
+    /**
+     * Resets the robot's pose
+     * @param pose the field relative Pose2D to reset
+     */
+    public void resetQuestEstimate(Pose2d pose){
+        questNav.setPose(new Pose3d(pose).transformBy(robotToQuest));
+    }
+
+    /** Adds the Quest estimated pose to the pose estimator */
+    private Pose2d getQuestPose() {
+        QuestPoseData pose = getQuestEstimates().get(getQuestEstimates().size()-1);
+        if (pose.isPresent()) {
+            return pose.getEstimatedPose().get();
+        } else {
+            return new Pose2d();
+        }
+    }
+
 
     /**
      *  Sets the entire robot's desired states using the setDesiredStates function in the swerveModule class.
