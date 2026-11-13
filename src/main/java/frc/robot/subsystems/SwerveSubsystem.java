@@ -254,6 +254,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
          * https://questnav.gg/docs/getting-started/robot-code#advanced-usage
          */
         SmartDashboard.putNumber("QuestNav Battery", questNav.getBatteryPercent().orElse(0));
+        SmartDashboard.putNumber("QuestNav timestamp", questNav.getFrameCount().getAsInt());
         OptionalInt batteryPercentOptional = questNav.getBatteryPercent();
         if (!questNav.isConnected()) {
             SmartDashboard.putString("QuestNav Battery Status", "No Quest Detected");
@@ -503,16 +504,16 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     /** Adds the Quest estimated pose to the pose estimator */
     private Pose2d getQuestPose() {
-        QuestPoseData pose = new QuestPoseData(new Pose3d(), 999999999.0);
+        // QuestPoseData pose = new QuestPoseData(new Pose3d(), 999999999.0);
 
-        if (getQuestEstimates().size() > 1) {
-            pose = getQuestEstimates().get(getQuestEstimates().size()-1);
-        }
-        if (pose.isPresent()) {
-            return pose.getEstimatedPose().get();
-        } else {
+        // if (getQuestEstimates().size() > 1) {
+        //     pose = getQuestEstimates().get(getQuestEstimates().size()-1);
+        // }
+        // if (pose.isPresent() && getQuestEstimates().size() > 1) {
+        //     return pose.getEstimatedPose().get();
+        // } else {
             return new Pose2d();
-        }
+        // }
     }
 
 
