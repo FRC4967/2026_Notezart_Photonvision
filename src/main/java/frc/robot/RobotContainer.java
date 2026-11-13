@@ -19,6 +19,7 @@ import frc.robot.commands.ManualShooterCommand;
 import frc.robot.commands.ShootCommand;
 
 import frc.robot.commands.OdometryResetCommand;
+import frc.robot.commands.ResetQuestPose;
 import frc.robot.subsystems.AutonSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CompliantWheelsSubsystem;
@@ -150,7 +151,8 @@ public class RobotContainer {
     ));
 
     driverJoystick.button(ButtonMap.RESET_GYRO_BUTTON).onTrue(new GyroResetCommand(swerveSubsystem));
-    driverJoystick.button(ButtonMap.RESET_ODOMETRY_BUTTON).onTrue(new OdometryResetCommand(aprilometry, swerveSubsystem));
+    // driverJoystick.button(ButtonMap.RESET_ODOMETRY_BUTTON).onTrue(new OdometryResetCommand(aprilometry, swerveSubsystem));
+    driverJoystick.button(ButtonMap.RESET_ODOMETRY_BUTTON).onTrue(new ResetQuestPose(swerveSubsystem));
   }
 
   public Command getAutonomousCommand() {
