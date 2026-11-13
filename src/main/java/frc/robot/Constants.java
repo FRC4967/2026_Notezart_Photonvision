@@ -54,6 +54,7 @@ public final class Constants {
         public static final Integer CHASSIS_AMP_AIM_BUTTON = 3;
         public static final Integer RESET_GYRO_BUTTON = 11;
         public static final Integer RESET_ODOMETRY_BUTTON = 12;
+        public static final Integer RESET_POSE = 8;
 
         /* angler mode buttons */
         public static final Integer AUTO_ANGLE_MODE = 2;

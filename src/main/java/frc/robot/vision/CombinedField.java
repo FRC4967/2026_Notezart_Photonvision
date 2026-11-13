@@ -72,7 +72,7 @@ public class CombinedField extends SubsystemBase implements BotPoseSourceType{
 
             drivetrain.setPose(new Pose2d(
                 poseEstimator.getEstimatedPosition().getX()*driveVisionAdjustment+drivetrain.getPose().getX()*(1-driveVisionAdjustment),
-                poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*(1-driveVisionAdjustment), 
+                poseEstimator.getEstimatedPosition().getY()*driveVisionAdjustment+drivetrain.getPose().getY()*(1-driveVisionAdjustment),
                 drivetrain.getGyroRotation()));
         }
 

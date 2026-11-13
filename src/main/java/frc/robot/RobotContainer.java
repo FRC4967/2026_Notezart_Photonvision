@@ -55,9 +55,7 @@ public class RobotContainer {
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_Y_AXIS),
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_X_AXIS),
     () -> driverJoystick.getRawAxis(ButtonMap.JOYSTICK_Z_AXIS),
-    () -> driverJoystick.getHID().getRawButton(ButtonMap.CHASSIS_SPEAKER_AIM_BUTTON),
-    () -> driverJoystick.getHID().getRawButton(ButtonMap.CHASSIS_NOTE_AIM_BUTTON),
-    () -> driverJoystick.getHID().getRawButton(ButtonMap.CHASSIS_AMP_AIM_BUTTON)
+    () -> driverJoystick.getHID().getRawButton(ButtonMap.RESET_POSE)
     ));
 
     shooterSubsystem.setDefaultCommand(new ShooterModesCommand(

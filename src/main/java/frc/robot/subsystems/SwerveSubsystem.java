@@ -152,7 +152,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         );
 
         field = new Field2d();
-        field.setRobotPose(odometry.getPoseMeters());
+        field.setRobotPose(getPose());
 
     }
  
@@ -169,7 +169,7 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
             }
         );
 
-        field.setRobotPose(odometry.getPoseMeters());
+        field.setRobotPose(getPose());
 
         alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == Alliance.Red) {
@@ -318,7 +318,13 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     @Override
     public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        Pose2d pose = odometry.getPoseMeters();
+
+        return new Pose2d(
+            pose.getX(),
+            Math.abs(-pose.getY()),
+            pose.getRotation()
+        );
     }
 
     /**
