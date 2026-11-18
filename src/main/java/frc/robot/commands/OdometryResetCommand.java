@@ -22,7 +22,6 @@ public class OdometryResetCommand extends Command{
         this.updatePose = updatePose;
         this.swerveSubsystem = swerveSubsystem;
       
-
         addRequirements(aprilometry);
         addRequirements(swerveSubsystem);
     }
