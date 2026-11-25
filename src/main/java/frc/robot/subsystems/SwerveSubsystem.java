@@ -527,7 +527,9 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         //     return new Pose2d();
         // }
 
-        odometry.addVisionMeasurement(pose.getEstimatedPose().get(), pose.getTimestamp().get());
+        // swerveDrive.addVisionMeasurement(pose.getEstimatedPose().get(), pose.getTimestamp().get());
+
+        // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
     }
 
     /**
