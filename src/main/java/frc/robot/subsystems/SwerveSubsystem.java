@@ -15,6 +15,7 @@ import org.apache.commons.numbers.core.Precision;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -116,7 +117,6 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
 
     /** QuestNav object. Docs: https://questnav.gg */
     private QuestNav questNav = new QuestNav();
-
 
     /** Distance from center of robot to quest, as well as quest rotation */
     private final Transform3d robotToQuest = new Transform3d(
@@ -516,14 +516,19 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
         //     pose = getQuestEstimates().get(getQuestEstimates().size()-1);
         // }
         // System.out.println(getQuestEstimates().size());
-        if (pose.isPresent() && getQuestEstimates().size() > 1) {
-            pose = getQuestEstimates().get(getQuestEstimates().size()-1);
-            return pose.getEstimatedPose().get();
-        } else {
-            return new Pose2d();
-        }
-    }
 
+        // int size = getQuestEstimates().size();
+
+        // if (pose.isPresent() && (size > 1) && (size <= size) && getQuestEstimates().size() > 0) {
+        //     pose = getQuestEstimates().get((size > getQuestEstimates().size()-1) ? getQuestEstimates().size() : size-1);
+        //     System.out.println(size);
+        //     return pose.getEstimatedPose().get();
+        // } else {
+        //     return new Pose2d();
+        // }
+
+        odometry.addVisionMeasurement(pose.getEstimatedPose().get(), pose.getTimestamp().get());
+    }
 
     /**
      *  Sets the entire robot's desired states using the setDesiredStates function in the swerveModule class.
@@ -542,8 +547,6 @@ public class SwerveSubsystem extends SubsystemBase implements BotPoseSourceType{
             swerveModules[i].setTeleopDesiredState(desiredStates[i]);
         }
     }
-
-
 
     @Override
     public void setPose(Pose2d pose) {
